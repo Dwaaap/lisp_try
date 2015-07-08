@@ -1,0 +1,2 @@
+(ros-load:load-system "cram_robohow_test" :cram-robohow-test)
+

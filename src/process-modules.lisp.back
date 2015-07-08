@@ -1,0 +1,79 @@
+
+(in-package :crt)
+
+
+(defgeneric call-action (action &rest params))
+
+(defmacro def-action-handler (name args &body body)
+  (alexandria:with-gensyms (action-sym params)
+    `(defmethod call-action ((,action-sym (eql ',name)) &rest ,params)
+       (destructuring-bind ,args ,params ,@body))))
+
+(def-process-module lasa-process-module (desig)
+  (apply #'call-action (reference desig)))
+
+(def-action-handler lasa-perceive (object-designator)
+  (ros-info (lasa-pm) "Perceiving dough with UIMA"))
+
+(def-action-handler lasa-control (action-desig)
+  
+  (ros-info (lasa-pm) "FUCK dough with UIMA") 
+                    )
+
+(def-fact-group lasa-process-module-action-designators (action-desig)
+
+  (<- (lasa-pm-running?)
+    (desig::lisp-pred get-running-process-module lasa-process-module))
+)
+
+(def-fact-group lasa-process-module (matching-process-module available-process-module)
+
+  (<- (matching-process-module ?desig lasa-process-module)
+    (desig::action-desig? ?desig)
+) (<- (available-process-module lasa-process-module)
+    (crs:true)))
+
+;;(defgeneric call-action (action &rest params))
+
+;;(defmacro def-action-handler (name args &body body)
+;;    (alexandria:with-gensyms (action-sym params)
+;;    `(defmethod call-action ((,action-sym (eql ',name)) &rest ,params)
+;;       (destructuring-bind ,args ,params ,@body)))
+;;)
+
+;;(def-process-module task-process-module (task-desig)
+;;  (apply #'call-action (reference task-desig))
+;;)
+
+;;(def-action-handler task-sender (task-desig task-name)
+;;  (ros-info (task-pm) "Task sender")
+;;  ;(call-relay (get-handle) task-name)
+;;)
+
+;;(def-fact-group task-process-module-designators (task-desig)
+ 
+;;  (ros-info (task-pm) "Designator ~a" designator)
+;;  (<- (task-pm?)
+;;    (desig::lisp-pred get-running-process-module task-process-module)
+;;  )
+  
+; (<- (task-desig ?desig (task-sender ?current-desig ?name))
+;    (task-pm-running?)
+;    (current-designator ?desig ?current-desig)
+;    (desig-prop ?current-desig (task-name ?name))
+;  )
+;;)
+
+;;(def-fact-group task-process-module (matching-process-module available-process-module)
+
+;;  (ros-info (task-pm) "I was here to find my process module.")
+ ;; (<- (matching-process-module ?desig task-process-module)
+   ;;   (desig::action-desig ?desig)
+ ;;     (or (desig-prop ?desig (what task)))
+;;  )
+ ;; (<- (available-process-module task-process-module)
+ ;;     (crs:true)
+ ;; )
+;;)
+
+
